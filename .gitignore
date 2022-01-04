@@ -1,0 +1,9 @@
+# Project exclude paths
+/target/
+.idea
+bots
+config
+data
+plugins
+**/test
+target
