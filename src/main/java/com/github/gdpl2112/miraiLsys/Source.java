@@ -8,10 +8,12 @@ import io.github.kloping.arr.Class2OMap;
 import kotlin.jvm.functions.Function2;
 import net.mamoe.mirai.contact.MemberPermission;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
+import net.mamoe.mirai.event.events.MemberJoinRequestEvent;
 import net.mamoe.mirai.message.data.At;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import static cn.kloping.lsys.workers.Methods.*;
 
@@ -33,6 +35,7 @@ public class Source {
     public static final String ON_GET_ADMIN = "onGetAdmin";
     public static final String ON_BOT_LOST_ADMIN = "onBotLostAdmin";
     public static final String ON_BOT_GET_ADMIN = "onBotGetAdmin";
+    public static final String ON_REQUEST_JOIN = "onRequestJoin";
 
     public static final Function2<User, Request, Result> SET_THE_TITLE = new Function2<User, Request, Result>() {
         @Override
@@ -81,6 +84,7 @@ public class Source {
             return null;
         }
     };
+
     public static final Function2<User, Request, Result> UN_THE_ADMIN = new Function2<User, Request, Result>() {
         @Override
         public Result invoke(User user, Request request) {
@@ -98,6 +102,73 @@ public class Source {
                         }
                     } else {
                         return state1;
+                    }
+                } else {
+                    return state1;
+                }
+            }
+            return null;
+        }
+    };
+    public static final Function2<User, Request, Result> KICK_ONE = new Function2<User, Request, Result>() {
+        @Override
+        public Result invoke(User user, Request request) {
+            if (request.getEvent() instanceof GroupMessageEvent) {
+                GroupMessageEvent gme = (GroupMessageEvent) request.getEvent();
+                int l = gme.getGroup().get(gme.getBot().getId()).getPermission().getLevel();
+                At at = Class2OMap.create(request.getEvent().getMessage()).get(At.class);
+                if (at == null) {
+                    return state2;
+                }
+                if (gme.getPermission().getLevel() > gme.getGroup().get(at.getTarget()).getPermission().getLevel()) {
+                    gme.getGroup().get(at.getTarget()).kick("->");
+                    return state0;
+                } else {
+                    return state1;
+                }
+            }
+            return null;
+        }
+    };
+
+    public static final int MAX_ES = 10;
+
+    public static final ArrayBlockingQueue<MemberJoinRequestEvent> MEMBER_JOIN_REQUEST_EVENTS = new ArrayBlockingQueue<>(MAX_ES);
+
+
+    public static final Function2<User, Request, Result> AGREE_REQUEST = new Function2<User, Request, Result>() {
+        @Override
+        public Result invoke(User user, Request request) {
+            if (request.getEvent() instanceof GroupMessageEvent) {
+                GroupMessageEvent event = (GroupMessageEvent) request.getEvent();
+                if (user.getQq().longValue() == Resource.conf.getQq().longValue()
+                        || event.getSender().getPermission().getLevel() > 0) {
+                    if (MEMBER_JOIN_REQUEST_EVENTS.isEmpty()) {
+                        return state2;
+                    } else {
+                        MemberJoinRequestEvent e1 = MEMBER_JOIN_REQUEST_EVENTS.poll();
+                        e1.accept();
+                    }
+                } else {
+                    return state1;
+                }
+            }
+            return null;
+        }
+    };
+
+    public static final Function2<User, Request, Result> REJECT_REQUEST = new Function2<User, Request, Result>() {
+        @Override
+        public Result invoke(User user, Request request) {
+            if (request.getEvent() instanceof GroupMessageEvent) {
+                GroupMessageEvent event = (GroupMessageEvent) request.getEvent();
+                if (user.getQq().longValue() == Resource.conf.getQq().longValue()
+                        || event.getSender().getPermission().getLevel() > 0) {
+                    if (MEMBER_JOIN_REQUEST_EVENTS.isEmpty()) {
+                        return state2;
+                    } else {
+                        MemberJoinRequestEvent e1 = MEMBER_JOIN_REQUEST_EVENTS.poll();
+                        e1.reject();
                     }
                 } else {
                     return state1;

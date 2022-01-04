@@ -63,6 +63,36 @@ public class JoinPoint extends SimpleListenerHost {
         });
         invokes.put(methodName, UN_THE_ADMIN);
 
+        //=====
+        ts = "同意申请";
+        methodName = "agreeRequest";
+        ig.getInvokes().put(ts.toString(), methodName);
+        ig.getInvokesAfter().put(ts.toString(), new String[]{"<At = ?>\n已同意申请"
+                , "<At = ?>\n权限不足"
+                , "<At = ?>\n暂无入群申请"
+        });
+        invokes.put(methodName, AGREE_REQUEST);
+
+        //=====
+        ts = "拒绝申请";
+        methodName = "rejectRequest";
+        ig.getInvokes().put(ts.toString(), methodName);
+        ig.getInvokesAfter().put(ts.toString(), new String[]{"<At = ?>\n已拒绝申请"
+                , "<At = ?>\n权限不足"
+                , "<At = ?>\n暂无入群申请"
+        });
+        invokes.put(methodName, REJECT_REQUEST);
+
+        //=====
+        ts = "踢.*";
+        methodName = "kickOne";
+        ig.getInvokes().put(ts.toString(), methodName);
+        ig.getInvokesAfter().put(ts.toString(), new String[]{"<At = ?>\n踢出成功"
+                , "<At = ?>\n权限不足"
+                , "<At = ?>\n未发现At"
+        });
+        invokes.put(methodName, KICK_ONE);
+
 
         ig.getInvokesAfter().put(ON_ACTIVE_JOIN, new String[]{"<At = $1>\n欢迎新人<Face = 311>\n你是第$2位群员哦"});
         ig.getInvokesAfter().put(ON_INVITE_JOIN, new String[]{"<At = $1>\n欢迎新人<Face = 311>\n你是第$2位群员哦\n邀请者:$3"});
@@ -72,7 +102,14 @@ public class JoinPoint extends SimpleListenerHost {
         ig.getInvokesAfter().put(ON_LOST_ADMIN, new String[]{"哈哈\n$1\n从\"$2\"变成了\"$3\""});
         ig.getInvokesAfter().put(ON_GET_ADMIN, new String[]{"嘻嘻\n$1\n从\"$2\"变成了\"$3\""});
         ig.getInvokesAfter().put(ON_BOT_LOST_ADMIN, new String[]{"呜呜\n$1\n从\"$2\"变成了\"$3\""});
-        ig.getInvokesAfter().put(ON_BOT_GET_ADMIN, new String[]{"嘿嘿,谢谢\n$1\n从\"$2\"变成了\"$3\""});
+        ig.getInvokesAfter().put(ON_REQUEST_JOIN, new String[]{
+                "收到入群申请,请管理员或管理者,回复\"同意申请\"或\"拒绝申请\"\n" +
+                        "QQ:$1\n" +
+                        "QQ昵称:$2\n" +
+                        "请求附带消息:$3\n" +
+                        "邀请者:$4"
+        });
+
 
         Runnable runnable = () -> {
             if (!Resource.conf.getInvokeGroups().containsKey(ig.getId())) {
@@ -105,7 +142,8 @@ public class JoinPoint extends SimpleListenerHost {
 
     @Override
     public void handleException(@NotNull CoroutineContext context, @NotNull Throwable exception) {
-        if (exception instanceof NoOpenException) {
+        Throwable e0 = exception.getCause().getCause();
+        if (e0 == NoOpenException.INSTANCE || e0 instanceof NoOpenException || e0 instanceof NullPointerException) {
             //未开启异常
         } else {
             System.err.println("Please check that the local service is correct\n" +
@@ -201,5 +239,22 @@ public class JoinPoint extends SimpleListenerHost {
                 , getPermissionName(event.getOrigin())
                 , getPermissionName(event.getNew())};
         Methods.execute0(args, arg, event.getGroup(), event.getBot().getId());
+    }
+
+    @EventHandler
+    public void onRequestJoin(MemberJoinRequestEvent event) {
+        isEnable(event.getGroupId());
+        String arg = InvokeGroupHolder.INVOKE_GROUP.getInvokesAfter().get(ON_REQUEST_JOIN)[0];
+        Object[] args = {
+                event.getFromId(),
+                event.getFromNick(),
+                event.getMessage(),
+                event.getInvitor() == null ? "无" : event.getInvitorId()
+        };
+        Methods.execute0(args, arg, event.getGroup(), event.getBot().getId());
+        if (MEMBER_JOIN_REQUEST_EVENTS.size() == MAX_ES) {
+            MEMBER_JOIN_REQUEST_EVENTS.poll();
+        }
+        MEMBER_JOIN_REQUEST_EVENTS.offer(event);
     }
 }
