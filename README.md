@@ -2,6 +2,8 @@
 
 Lsys子插件
 
+[主插件](https://github.com/Kloping/MiraiLsys)
+
 #### 若无极端情况请不要修改文件名 否则将无法正常工作
 
 无命令 其存在功能
