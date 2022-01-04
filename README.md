@@ -1,6 +1,6 @@
 ### 可以看成一个群管Lsys插件
 
-Lsys子插件
+[Lsys子插件-群管](https://github.com/gdpl2112/MiraiPlugin-AdminOwner/releases)
 
 [主插件](https://github.com/Kloping/MiraiLsys)
 
