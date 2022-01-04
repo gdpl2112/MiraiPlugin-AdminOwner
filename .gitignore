@@ -7,3 +7,4 @@ data
 plugins
 **/test
 target
+conf/LSys/conf.json
