@@ -29,7 +29,7 @@ public class Source {
     public static final String ON_QUIT = "onQuit";
     public static final String ON_KICK = "onKick";
     public static final String ON_ACTIVE_JOIN = "onActiveJoin";
-    public static final String ON_INVITE_JOIN = "onActiveJoin";
+    public static final String ON_INVITE_JOIN = "onInviteJoin";
     public static final String ON_MODIFY_NAME_CARD = "onModifyNameCard";
     public static final String ON_LOST_ADMIN = "onLostAdmin";
     public static final String ON_GET_ADMIN = "onGetAdmin";

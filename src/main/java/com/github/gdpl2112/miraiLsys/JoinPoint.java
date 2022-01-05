@@ -167,7 +167,11 @@ public class JoinPoint extends SimpleListenerHost {
     public void onActiveJoin(MemberJoinEvent.Active event) {
         isEnable(event.getGroupId());
         String arg = InvokeGroupHolder.INVOKE_GROUP.getInvokesAfter().get(ON_ACTIVE_JOIN)[0];
-        Methods.execute0(new Object[]{event.getMember().getId(), event.getGroup().getMembers().size()}
+        Methods.execute0(new Object[]{
+                        event.getMember().getId()
+                        , event.getGroup().getMembers().size()
+                        , "无"
+                }
                 , arg, event.getGroup(), event.getMember().getId());
     }
 
