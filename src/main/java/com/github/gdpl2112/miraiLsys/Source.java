@@ -135,7 +135,6 @@ public class Source {
 
     public static final ArrayBlockingQueue<MemberJoinRequestEvent> MEMBER_JOIN_REQUEST_EVENTS = new ArrayBlockingQueue<>(MAX_ES);
 
-
     public static final Function2<User, Request, Result> AGREE_REQUEST = new Function2<User, Request, Result>() {
         @Override
         public Result invoke(User user, Request request) {

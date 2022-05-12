@@ -29,8 +29,9 @@ public class Utils {
                 return "群主";
             case MEMBER:
                 return "群员";
+            default:
+                return "未知身份";
         }
-        return "未知身份";
     }
 
 }
