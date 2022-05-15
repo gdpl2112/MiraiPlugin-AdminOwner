@@ -110,7 +110,6 @@ public class JoinPoint extends SimpleListenerHost {
                         "邀请者:$4"
         });
 
-
         Runnable runnable = () -> {
             if (!Resource.conf.getInvokeGroups().containsKey(ig.getId())) {
                 Resource.conf.getInvokeGroups().put(ig.getId(), ig);
@@ -122,7 +121,7 @@ public class JoinPoint extends SimpleListenerHost {
     }
 
     public static void before() throws ClassNotFoundException {
-        File cf = new File(Resource.rootPath, "conf/lsys/adminOwner/illegal.hml");
+        File cf = new File(Resource.ROOT_PATH, "conf/lsys/adminOwner/illegal.hml");
         String hmlStr = FileUtils.getStringFromFile(cf.getAbsolutePath());
         if (hmlStr.trim().isEmpty()) {
             ILLEGAL_STR.add("艹");
