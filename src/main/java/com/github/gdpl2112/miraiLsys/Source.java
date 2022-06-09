@@ -23,6 +23,7 @@ import static cn.kloping.lsys.workers.Methods.*;
  * @Date 2022/1/4-12
  */
 public class Source {
+
     public static final List<String> ILLEGAL_STR = new LinkedList<>();
     public static final JoinPoint INSTANCE = new JoinPoint();
     public static final String GID = "admin-owner";
@@ -66,7 +67,7 @@ public class Source {
                 GroupAwareMessageEvent gme = (GroupAwareMessageEvent) request.getEvent();
                 int l = gme.getGroup().get(gme.getBot().getId()).getPermission().getLevel();
                 if (l == MemberPermission.OWNER.getLevel()) {
-                    if (user.getQq().longValue() == Resource.conf.getQq().longValue()) {
+                    if (Resource.conf.hasPerm(request.getSendId().longValue())) {
                         At at = Class2OMap.create(request.getEvent().getMessage()).get(At.class);
                         if (at == null) {
                             return state2;
@@ -92,7 +93,7 @@ public class Source {
                 GroupAwareMessageEvent gme = (GroupAwareMessageEvent) request.getEvent();
                 int l = gme.getGroup().get(gme.getBot().getId()).getPermission().getLevel();
                 if (l == MemberPermission.OWNER.getLevel()) {
-                    if (user.getQq().longValue() == Resource.conf.getQq().longValue()) {
+                    if (Resource.conf.hasPerm(request.getSendId().longValue())) {
                         At at = Class2OMap.create(request.getEvent().getMessage()).get(At.class);
                         if (at == null) {
                             return state2;
@@ -140,8 +141,7 @@ public class Source {
         public Result invoke(User user, Request request) {
             if (request.getEvent() instanceof GroupAwareMessageEvent) {
                 GroupAwareMessageEvent event = (GroupAwareMessageEvent) request.getEvent();
-                if (user.getQq().longValue() == Resource.conf.getQq().longValue()
-                        || event.getGroup().get(event.getSender().getId()).getPermission().getLevel() > 0) {
+                if (Resource.conf.hasPerm(request.getSendId().longValue()) || event.getGroup().get(event.getSender().getId()).getPermission().getLevel() > 0) {
                     if (MEMBER_JOIN_REQUEST_EVENTS.isEmpty()) {
                         return state2;
                     } else {
@@ -161,8 +161,7 @@ public class Source {
         public Result invoke(User user, Request request) {
             if (request.getEvent() instanceof GroupAwareMessageEvent) {
                 GroupAwareMessageEvent event = (GroupAwareMessageEvent) request.getEvent();
-                if (user.getQq().longValue() == Resource.conf.getQq().longValue()
-                        || event.getGroup().get(event.getSender().getId()).getPermission().getLevel() > 0) {
+                if (Resource.conf.hasPerm(request.getSendId().longValue()) || event.getGroup().get(event.getSender().getId()).getPermission().getLevel() > 0) {
                     if (MEMBER_JOIN_REQUEST_EVENTS.isEmpty()) {
                         return state2;
                     } else {
