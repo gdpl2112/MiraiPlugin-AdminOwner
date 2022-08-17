@@ -11,10 +11,10 @@ import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
  */
 object AdminOwner :
     KotlinPlugin(
-        JvmPluginDescriptionBuilder("com.github.gdpl2112.lsys.AdminOwner", 1.2.toString())
+        JvmPluginDescriptionBuilder("com.github.gdpl2112.lsys.AdminOwner", 1.3.toString())
             .author("github-kloping")
             .info("lsys群管插件")
-            .dependsOn("cn.kloping.Lsys", "1.5", true)
+            .dependsOn("cn.kloping.Lsys", "1.6", true)
             .build()
     ) {
 
