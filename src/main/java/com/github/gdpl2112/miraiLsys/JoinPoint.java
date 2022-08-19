@@ -3,8 +3,6 @@ package com.github.gdpl2112.miraiLsys;
 import cn.kloping.lsys.Resource;
 import cn.kloping.lsys.entitys.InvokeGroup;
 import cn.kloping.lsys.workers.Methods;
-import io.github.kloping.file.FileUtils;
-import io.github.kloping.serialize.HMLObject;
 import kotlin.coroutines.CoroutineContext;
 import net.mamoe.mirai.contact.NormalMember;
 import net.mamoe.mirai.event.EventHandler;
@@ -12,9 +10,6 @@ import net.mamoe.mirai.event.GlobalEventChannel;
 import net.mamoe.mirai.event.SimpleListenerHost;
 import net.mamoe.mirai.event.events.*;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
-import java.util.List;
 
 import static cn.kloping.lsys.workers.Methods.invokes;
 import static com.github.gdpl2112.miraiLsys.Source.*;
@@ -121,18 +116,7 @@ public class JoinPoint extends SimpleListenerHost {
     }
 
     public static void before() throws ClassNotFoundException {
-        File cf = new File(Resource.ROOT_PATH, "conf/lsys/adminOwner/illegal.hml");
-        String hmlStr = FileUtils.getStringFromFile(cf.getAbsolutePath());
-        if (hmlStr.trim().isEmpty()) {
-            ILLEGAL_STR.add("艹");
-            ILLEGAL_STR.add("C");
-            FileUtils.putStringInFile(HMLObject.toHMLString(ILLEGAL_STR), cf);
-        } else {
-            ILLEGAL_STR.clear();
-            HMLObject ho = HMLObject.parseObject(hmlStr);
-            List<String> list = (List<String>) ho.toJavaObject();
-            ILLEGAL_STR.addAll(list);
-        }
+
     }
 
     public JoinPoint() {
