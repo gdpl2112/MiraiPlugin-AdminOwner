@@ -193,6 +193,7 @@ public class JoinPoint extends SimpleListenerHost {
     @EventHandler
     public void onModifyCard(MemberCardChangeEvent event) {
         isEnable(event.getGroupId());
+        if (event.getNew().trim().isEmpty()) return;
         String arg = InvokeGroupHolder.INVOKE_GROUP.getInvokesAfter().get(ON_MODIFY_NAME_CARD)[0];
         Object[] args = {event.getMember().getId(), event.getOrigin(), event.getNew()};
         Methods.execute0(args, arg, event.getGroup(), event.getMember().getId());
