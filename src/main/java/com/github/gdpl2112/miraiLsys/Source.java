@@ -6,6 +6,9 @@ import cn.kloping.lsys.entitys.Result;
 import cn.kloping.lsys.entitys.User;
 import io.github.kloping.arr.Class2OMap;
 import kotlin.jvm.functions.Function2;
+import net.mamoe.mirai.console.permission.AbstractPermitteeId;
+import net.mamoe.mirai.console.permission.PermissionService;
+import net.mamoe.mirai.console.permission.PermitteeId;
 import net.mamoe.mirai.contact.MemberPermission;
 import net.mamoe.mirai.event.events.GroupAwareMessageEvent;
 import net.mamoe.mirai.event.events.MemberJoinRequestEvent;
@@ -121,7 +124,10 @@ public class Source {
                 if (at == null) {
                     return state2;
                 }
-                if (gme.getGroup().get(gme.getSender().getId()).getPermission().getLevel() > gme.getGroup().get(at.getTarget()).getPermission().getLevel()) {
+                boolean k0 = gme.getGroup().get(gme.getSender().getId()).getPermission().getLevel() > gme.getGroup().get(at.getTarget()).getPermission().getLevel();
+                PermitteeId permitteeId = new AbstractPermitteeId.ExactMember(request.getGId().longValue(), request.getSendId().longValue());
+                boolean k1 = PermissionService.hasPermission(permitteeId, AdminOwner.INSTANCE.getParentPermission().getId());
+                if (k0 || k1) {
                     gme.getGroup().get(at.getTarget()).kick("->");
                     return state0;
                 } else {
