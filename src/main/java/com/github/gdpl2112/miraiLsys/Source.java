@@ -148,7 +148,7 @@ public class Source {
                 if (at == null) {
                     return state2;
                 }
-                Integer ms = Integer.valueOf(NumberUtils.findNumberFromString(request.getStr()));
+                Integer ms = Integer.valueOf(NumberUtils.findNumberFromString(request.getStr().replaceFirst(at.getTarget() + "", "")));
                 ms = ms == null ? 1 : ms;
                 if (request.getStr().contains("s")) {
                     ms = ms;
@@ -160,11 +160,33 @@ public class Source {
                     ms = ms * 60 * 60 * 24;
                 }
                 boolean k0 = gme.getGroup().get(gme.getSender().getId()).getPermission().getLevel()
-                        > gme.getGroup().get(at.getTarget()).getPermission().getLevel();
+                        >= gme.getGroup().get(at.getTarget()).getPermission().getLevel();
                 PermitteeId permitteeId = new AbstractPermitteeId.ExactMember(request.getGId().longValue(), request.getSendId().longValue());
                 boolean k1 = PermissionService.hasPermission(permitteeId, AdminOwner.INSTANCE.getParentPermission().getId());
                 if (k0 || k1) {
                     gme.getGroup().get(at.getTarget()).mute(ms);
+                    return state0;
+                } else {
+                    return state1;
+                }
+            }
+            return null;
+        }
+    };
+    public static final Function2<User, Request, Result> UN_MUTE = new Function2<User, Request, Result>() {
+        @Override
+        public Result invoke(User user, Request request) {
+            if (request.getEvent() instanceof GroupAwareMessageEvent) {
+                GroupAwareMessageEvent gme = (GroupAwareMessageEvent) request.getEvent();
+                At at = Class2OMap.create(request.getEvent().getMessage()).get(At.class);
+                if (at == null) {
+                    return state2;
+                }
+                boolean k0 = gme.getGroup().get(gme.getSender().getId()).getPermission().getLevel() >= gme.getGroup().get(at.getTarget()).getPermission().getLevel();
+                PermitteeId permitteeId = new AbstractPermitteeId.ExactMember(request.getGId().longValue(), request.getSendId().longValue());
+                boolean k1 = PermissionService.hasPermission(permitteeId, AdminOwner.INSTANCE.getParentPermission().getId());
+                if (k0 || k1) {
+                    gme.getGroup().get(at.getTarget()).unmute();
                     return state0;
                 } else {
                     return state1;

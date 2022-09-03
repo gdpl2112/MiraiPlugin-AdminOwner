@@ -99,6 +99,15 @@ public class JoinPoint extends SimpleListenerHost {
         });
         invokes.put(methodName, MUTE_ONE);
 
+        ts = "取消禁言.*";
+        methodName = "un_mute";
+        ig.getInvokes().put(ts.toString(), methodName);
+        ig.getInvokesAfter().put(ts.toString(), new String[]{"<At = ?>\nOK"
+                , "<At = ?>\n权限不足"
+                , "<At = ?>\n未发现At"
+        });
+        invokes.put(methodName, UN_MUTE);
+
         ig.getInvokesAfter().put(ON_ACTIVE_JOIN, new String[]{"<At = $1>\n欢迎新人<Face = 311>\n你是第$2位群员哦"});
         ig.getInvokesAfter().put(ON_INVITE_JOIN, new String[]{"<At = $1>\n欢迎新人<Face = 311>\n你是第$2位群员哦\n邀请者:$3"});
         ig.getInvokesAfter().put(ON_QUIT, new String[]{"有个人从小道溜了<Face = 15>\n($1)"});
