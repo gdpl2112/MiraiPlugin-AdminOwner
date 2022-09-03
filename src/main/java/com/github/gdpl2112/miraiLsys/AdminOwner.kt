@@ -14,7 +14,7 @@ object AdminOwner :
         JvmPluginDescriptionBuilder("com.github.gdpl2112.lsys.AdminOwner", 1.5.toString())
             .author("github-kloping")
             .info("lsys群管插件")
-            .dependsOn("cn.kloping.Lsys", "1.6", true)
+            .dependsOn("cn.kloping.Lsys", "1.7", true)
             .build()
     ) {
 
