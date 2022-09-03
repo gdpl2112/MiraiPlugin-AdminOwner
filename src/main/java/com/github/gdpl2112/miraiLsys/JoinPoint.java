@@ -28,6 +28,7 @@ public class JoinPoint extends SimpleListenerHost {
             e.printStackTrace();
         }
         InvokeGroup ig = new InvokeGroup(GID);
+
         String ts = "我要头衔.*";
         String methodName = "setTheTitle";
 
@@ -88,6 +89,15 @@ public class JoinPoint extends SimpleListenerHost {
         });
         invokes.put(methodName, KICK_ONE);
 
+        //=====
+        ts = "禁言.*";
+        methodName = "muteOne";
+        ig.getInvokes().put(ts.toString(), methodName);
+        ig.getInvokesAfter().put(ts.toString(), new String[]{"<At = ?>\nOK"
+                , "<At = ?>\n权限不足"
+                , "<At = ?>\n未发现At"
+        });
+        invokes.put(methodName, MUTE_ONE);
 
         ig.getInvokesAfter().put(ON_ACTIVE_JOIN, new String[]{"<At = $1>\n欢迎新人<Face = 311>\n你是第$2位群员哦"});
         ig.getInvokesAfter().put(ON_INVITE_JOIN, new String[]{"<At = $1>\n欢迎新人<Face = 311>\n你是第$2位群员哦\n邀请者:$3"});

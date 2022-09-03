@@ -5,6 +5,7 @@ import cn.kloping.lsys.entitys.Request;
 import cn.kloping.lsys.entitys.Result;
 import cn.kloping.lsys.entitys.User;
 import io.github.kloping.arr.Class2OMap;
+import io.github.kloping.number.NumberUtils;
 import kotlin.jvm.functions.Function2;
 import net.mamoe.mirai.console.permission.AbstractPermitteeId;
 import net.mamoe.mirai.console.permission.PermissionService;
@@ -114,6 +115,7 @@ public class Source {
             return null;
         }
     };
+
     public static final Function2<User, Request, Result> KICK_ONE = new Function2<User, Request, Result>() {
         @Override
         public Result invoke(User user, Request request) {
@@ -129,6 +131,40 @@ public class Source {
                 boolean k1 = PermissionService.hasPermission(permitteeId, AdminOwner.INSTANCE.getParentPermission().getId());
                 if (k0 || k1) {
                     gme.getGroup().get(at.getTarget()).kick("->");
+                    return state0;
+                } else {
+                    return state1;
+                }
+            }
+            return null;
+        }
+    };
+    public static final Function2<User, Request, Result> MUTE_ONE = new Function2<User, Request, Result>() {
+        @Override
+        public Result invoke(User user, Request request) {
+            if (request.getEvent() instanceof GroupAwareMessageEvent) {
+                GroupAwareMessageEvent gme = (GroupAwareMessageEvent) request.getEvent();
+                At at = Class2OMap.create(request.getEvent().getMessage()).get(At.class);
+                if (at == null) {
+                    return state2;
+                }
+                Integer ms = Integer.valueOf(NumberUtils.findNumberFromString(request.getStr()));
+                ms = ms == null ? 1 : ms;
+                if (request.getStr().contains("s")) {
+                    ms = ms;
+                } else if (request.getStr().contains("m")) {
+                    ms = ms * 60;
+                } else if (request.getStr().contains("h")) {
+                    ms = ms * 60 * 60;
+                } else if (request.getStr().contains("d")) {
+                    ms = ms * 60 * 60 * 24;
+                }
+                boolean k0 = gme.getGroup().get(gme.getSender().getId()).getPermission().getLevel()
+                        > gme.getGroup().get(at.getTarget()).getPermission().getLevel();
+                PermitteeId permitteeId = new AbstractPermitteeId.ExactMember(request.getGId().longValue(), request.getSendId().longValue());
+                boolean k1 = PermissionService.hasPermission(permitteeId, AdminOwner.INSTANCE.getParentPermission().getId());
+                if (k0 || k1) {
+                    gme.getGroup().get(at.getTarget()).mute(ms);
                     return state0;
                 } else {
                     return state1;
